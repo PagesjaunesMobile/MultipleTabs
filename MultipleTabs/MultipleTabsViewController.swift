@@ -8,16 +8,16 @@
 
 import UIKit
 
-public final class MultipleTabsViewController: UIViewController {
+open class MultipleTabsViewController: UIViewController {
   
-  var titlesHeight: CGFloat = 50
-  var titleBorderColor: UIColor = .black
-  var titleBorderHeight: CGFloat = 5
-  var titleSelectedColor: UIColor = .black
-  var titleUnselectedColor: UIColor = .darkGray
-  var titleSelectedFont: UIFont = .boldSystemFont(ofSize: 14)
-  var titleUnselectedFont: UIFont = .systemFont(ofSize: 14)
-  var borderWidthMultiplier: CGFloat = 0.8
+  public var titlesHeight: CGFloat = 50
+  public var titleBorderColor: UIColor = .black
+  public var titleBorderHeight: CGFloat = 5
+  public var titleSelectedColor: UIColor = .black
+  public var titleUnselectedColor: UIColor = .darkGray
+  public var titleSelectedFont: UIFont = .boldSystemFont(ofSize: 14)
+  public var titleUnselectedFont: UIFont = .systemFont(ofSize: 14)
+  public var borderWidthMultiplier: CGFloat = 0.8
   
   fileprivate var borderXConstraint: NSLayoutConstraint?
   
@@ -31,10 +31,18 @@ public final class MultipleTabsViewController: UIViewController {
     collectionView.register(type, forCellWithReuseIdentifier: identifier)
   }
   
+  public func register(nib: UINib?, identifier: String) {
+    collectionView.register(nib, forCellWithReuseIdentifier: identifier)
+  }
+  
   public func dequeue(identifier: String, index: Int) -> UICollectionViewCell {
     
     let ip = IndexPath(row: index, section: 0)
     return collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: ip)
+  }
+  
+  public func reloadData() {
+    collectionView.reloadData()
   }
   
   fileprivate lazy var border: UIView = { [weak self] in
@@ -120,7 +128,7 @@ public final class MultipleTabsViewController: UIViewController {
     layout.minimumLineSpacing = 0
     layout.minimumInteritemSpacing = 0
     layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-
+    
     layout.scrollDirection = .horizontal
     
     let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -151,7 +159,7 @@ public final class MultipleTabsViewController: UIViewController {
   
   private func setup() {
     
-    reset()        
+    reset()
     
     setupButtons()
     setupBorder()
@@ -229,7 +237,6 @@ public final class MultipleTabsViewController: UIViewController {
     
     let indexPath = IndexPath(row: button.tag, section: 0)
     collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
-    moved(toIndex: button.tag)
   }
   
   fileprivate func moved(toIndex index: Int) {
@@ -263,7 +270,7 @@ public final class MultipleTabsViewController: UIViewController {
     collectionView.reloadData()
   }
   
-  override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+  override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
     coordinator.animate(alongsideTransition: nil, completion: { [weak self] _ in
       
@@ -280,19 +287,25 @@ public final class MultipleTabsViewController: UIViewController {
 extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
   
   public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    
     return dataSource?.numberOfTabs() ?? 0
   }
   
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    
     return dataSource?.cell(forTabIndex: indexPath.row) ?? UICollectionViewCell()
   }
   
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
   }
-
+  
+  public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    dataSource?.willDisplay?(cell: cell, forTabIndex: indexPath.row)
+  }
+  
+  public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    dataSource?.didEndDisplaying?(cell: cell, forTabIndex: indexPath.row)
+  }
+  
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
     moved(toIndex: Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollView.frame.width))
   }
@@ -302,6 +315,7 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   @objc func numberOfTabs() -> Int
   @objc func title(forTabIndex index: Int) -> String
-  
   @objc func cell(forTabIndex index: Int) -> UICollectionViewCell
+  @objc optional func willDisplay(cell: UICollectionViewCell, forTabIndex index: Int)
+  @objc optional func didEndDisplaying(cell: UICollectionViewCell, forTabIndex index: Int)
 }
