@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "MultipleTabs"
-  s.version      = "0.1.0"
+  s.version      = "0.1.1"
   s.summary      = "This is a library to handle multiple tabs animated in a collectionView."
 
   # This description is used to generate tags and improve search results.
