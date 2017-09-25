@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "MultipleTabs"
-  s.version      = "0.1.1"
+  s.version      = "0.1.2"
   s.summary      = "This is a library to handle multiple tabs animated in a collectionView."
 
   # This description is used to generate tags and improve search results.
@@ -25,8 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-  This is a library to handle multiple tabs animated in a collectionView.
-  It's completely written in Swift.'
+ MultipleTabs is a custom iOS component to handle tabs navigation as android Tabs component. It's fully developped in swift but can also be used in ObjC.'
                    DESC
 
   s.homepage     = "https://github.com/XavierDK/MultipleTabs"
@@ -41,7 +40,7 @@ Pod::Spec.new do |s|
   #
 
   s.license      = "MIT"
-  # s.license      = { :type => "MIT", :file => "https://github.com/XavierDK/MultipleTabs/LICENSE" }
+  # s.license      = { :type => "MIT", :file => "https://github.com/PagesJaunesMobile/MultipleTabs/LICENSE" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -81,7 +80,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/XavierDK/MultipleTabs.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/PagesJaunesMobile/MultipleTabs.git", :tag => "#{s.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
