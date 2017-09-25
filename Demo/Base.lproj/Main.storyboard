@@ -20,44 +20,12 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SwK-1S-to2">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <connections>
-                                    <segue destination="zTX-Sx-YPQ" kind="embed" id="o8u-PQ-w3D"/>
-                                </connections>
-                            </containerView>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="SwK-1S-to2" secondAttribute="bottom" id="8hn-0F-PLZ"/>
-                            <constraint firstItem="SwK-1S-to2" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="bkc-UU-G2W"/>
-                            <constraint firstAttribute="trailing" secondItem="SwK-1S-to2" secondAttribute="trailing" id="wNl-Fi-ho2"/>
-                            <constraint firstItem="SwK-1S-to2" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="wU0-Fq-5pS"/>
-                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-63" y="-65"/>
-        </scene>
-        <!--Multiple Tabs View Controller-->
-        <scene sceneID="YfY-qz-EJW">
-            <objects>
-                <viewController id="zTX-Sx-YPQ" customClass="MultipleTabsViewController" customModule="MultipleTabs" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="tTQ-1e-IT6"/>
-                        <viewControllerLayoutGuide type="bottom" id="ZTI-4h-D5k"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="oFI-lD-2SQ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="I5H-lq-QKH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-63" y="666"/>
         </scene>
     </scenes>
 </document>

@@ -27,19 +27,14 @@
 import UIKit
 import MultipleTabs
 
-class ViewController: UIViewController {
-  
-  var multipleTabsViewController: MultipleTabsViewController?
+class ViewController: MultipleTabsViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    if let multipleTabsViewController = childViewControllers.first as? MultipleTabsViewController {
-      self.multipleTabsViewController = multipleTabsViewController
-      multipleTabsViewController.register(type: Cell1.self, identifier: "Cell1")
-      multipleTabsViewController.register(type: Cell2.self, identifier: "Cell2")
-      multipleTabsViewController.dataSource = self
-    }
+    register(type: Cell1.self, identifier: "Cell1")
+    register(type: Cell2.self, identifier: "Cell2")
+    dataSource = self
   }
 }
 
@@ -58,10 +53,10 @@ extension ViewController: MultipleTabsViewControllerDataSource {
     let cell: UICollectionViewCell
     
     if index == 0 {
-      cell = multipleTabsViewController!.dequeue(identifier: "Cell1", index: index)
+      cell = dequeue(identifier: "Cell1", index: index)
     }
     else {
-      cell = multipleTabsViewController!.dequeue(identifier: "Cell2", index: index)
+      cell = dequeue(identifier: "Cell2", index: index)
     }
     
     return cell
