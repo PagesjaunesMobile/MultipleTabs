@@ -5,6 +5,8 @@ MultipleTabs is a custom iOS component to handle tabs navigation as android Tabs
 
 https://material.io/guidelines/components/tabs.html
 
+![Demo Gif](gif.gif)
+
 ## How To Get Started
 
 Download MultipleTabs and try out the included iPhone/iPad example app.
@@ -58,7 +60,8 @@ If you would like assistance with integrating MultipleTabs or modifying it for y
 MultipleTabs is Copyright (c) 2017 PagesJaunes SA and released open source under a MIT license :
 
 ```
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
