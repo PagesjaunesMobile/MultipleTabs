@@ -50,42 +50,45 @@ Create a new class and inherit from MultipleTabsViewController :
 In viewDidLoad register the collectionViewCells you will use for each tab, and declare your dataSource `MultipleTabsViewControllerDataSource` :
 
 ```
-	override func viewDidLoad() {
-    	super.viewDidLoad()
+override func viewDidLoad() {
+  super.viewDidLoad()
     
-    	register(type: Cell1.self, identifier: "Cell1")
-    	register(type: Cell2.self, identifier: "Cell2")
-    	dataSource = self
-  	}
+  register(type: Cell1.self, identifier: "Cell1")
+  register(type: Cell2.self, identifier: "Cell2")
+  dataSource = self
+}
 ```
 
 The dataSource should implement 3 callbacks method :
 
 ```
-	/// The number of tabs you want
-	func numberOfTabs() -> Int {
-    	return 2
-  	}
+extension ViewController: MultipleTabsViewControllerDataSource {
   
-  	/// The title for each tab
-  	func title(forTabIndex index: Int) -> String {
-    	return "Title"
-  	}
+  /// The number of tabs you want
+  func numberOfTabs() -> Int {
+    return 2
+  }
   
- 	/// Return the container cell you want for the tabIndex
- 	func cell(forTabIndex index: Int) -> UICollectionViewCell {
-
-    	let cell: UICollectionViewCell
+  /// The title for each tab
+  func title(forTabIndex index: Int) -> String {
+    return "Title"
+  }
+  
+  /// Return the container cell you want for the tabIndex
+  func cell(forTabIndex index: Int) -> UICollectionViewCell {
     
-    	if index == 0 {
-      		cell = dequeue(identifier: "Cell1", index: index)
-    	}
-    	else {
-      		cell = dequeue(identifier: "Cell2", index: index)
-    	}
+    let cell: UICollectionViewCell
     
-    	return cell
-  	}
+    if index == 0 {
+      cell = dequeue(identifier: "Cell1", index: index)
+    }
+    else {
+      cell = dequeue(identifier: "Cell2", index: index)
+    }
+    
+    return cell
+  }
+}
 
 ```
 
