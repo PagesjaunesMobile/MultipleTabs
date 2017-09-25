@@ -28,13 +28,28 @@ import UIKit
 
 open class MultipleTabsViewController: UIViewController {
   
+  /// The height for the titles bar
   public var titlesHeight: CGFloat = 50
+  
+  /// The color for the bottom selected border of the tab
   public var titleBorderColor: UIColor = .black
+  
+  /// The height for the bottom selected border of the tab
   public var titleBorderHeight: CGFloat = 5
+  
+  /// The color for the title label when selected
   public var titleSelectedColor: UIColor = .black
+  
+  /// The color for the title label when unselected
   public var titleUnselectedColor: UIColor = .darkGray
+  
+  /// The font for the title label when selected
   public var titleSelectedFont: UIFont = .boldSystemFont(ofSize: 14)
+  
+  /// The font for the title label when unselected
   public var titleUnselectedFont: UIFont = .systemFont(ofSize: 14)
+  
+  /// The multiplier for the size of the bottom selected border compared of the width of the tab title
   public var borderWidthMultiplier: CGFloat = 0.8
   
   fileprivate var borderXConstraint: NSLayoutConstraint?
@@ -331,9 +346,18 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
 
 @objc public protocol MultipleTabsViewControllerDataSource {
   
+  // The number of tabs you want
   @objc func numberOfTabs() -> Int
+  
+  /// The title for each tab
   @objc func title(forTabIndex index: Int) -> String
+  
+  /// Return the container cell you want for the tabIndex
   @objc func cell(forTabIndex index: Int) -> UICollectionViewCell
+  
+  /// Called just before cell will be displayed
   @objc optional func willDisplay(cell: UICollectionViewCell, forTabIndex index: Int)
+  
+  /// Called just after cell has been displayed
   @objc optional func didEndDisplaying(cell: UICollectionViewCell, forTabIndex index: Int)
 }

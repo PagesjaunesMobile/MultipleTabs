@@ -21,8 +21,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-
-*********************************************/
+ 
+ *********************************************/
 
 import UIKit
 import MultipleTabs
@@ -40,16 +40,19 @@ class ViewController: MultipleTabsViewController {
 
 extension ViewController: MultipleTabsViewControllerDataSource {
   
+  /// The number of tabs you want
   func numberOfTabs() -> Int {
     return 2
   }
   
+  /// The title for each tab
   func title(forTabIndex index: Int) -> String {
     return "Title"
   }
   
+  /// Return the container cell you want for the tabIndex
   func cell(forTabIndex index: Int) -> UICollectionViewCell {
-
+    
     let cell: UICollectionViewCell
     
     if index == 0 {

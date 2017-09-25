@@ -29,7 +29,7 @@ Podfile
 
 https://github.com/Carthage/Carthage
 
-```github "XavierDK/MultipleTabs"```
+```github "PagesJaunesMobile/MultipleTabs"```
 
 ### Other installation 
 
@@ -42,6 +42,94 @@ Add MultipleTabs folder to your project (or workspace).
 Import the framework :
 
 ```import MultipleTabs```
+
+Create a new class and inherit from MultipleTabsViewController :
+
+```class ViewController: MultipleTabsViewController {```
+
+In viewDidLoad register the collectionViewCells you will use for each tab, and declare your dataSource `MultipleTabsViewControllerDataSource` :
+
+```
+	override func viewDidLoad() {
+    	super.viewDidLoad()
+    
+    	register(type: Cell1.self, identifier: "Cell1")
+    	register(type: Cell2.self, identifier: "Cell2")
+    	dataSource = self
+  	}
+```
+
+The dataSource should implement 3 callbacks method :
+
+```
+	/// The number of tabs you want
+	func numberOfTabs() -> Int {
+    	return 2
+  	}
+  
+  	/// The title for each tab
+  	func title(forTabIndex index: Int) -> String {
+    	return "Title"
+  	}
+  
+ 	/// Return the container cell you want for the tabIndex
+ 	func cell(forTabIndex index: Int) -> UICollectionViewCell {
+
+    	let cell: UICollectionViewCell
+    
+    	if index == 0 {
+      		cell = dequeue(identifier: "Cell1", index: index)
+    	}
+    	else {
+      		cell = dequeue(identifier: "Cell2", index: index)
+    	}
+    
+    	return cell
+  	}
+
+```
+
+### Customization
+
+Some customization are available but all of them comes with default values :
+
+```
+  /// The height for the titles bar
+  public var titlesHeight: CGFloat = 50
+  
+  /// The color for the bottom selected border of the tab
+  public var titleBorderColor: UIColor = .black
+  
+  /// The height for the bottom selected border of the tab
+  public var titleBorderHeight: CGFloat = 5
+  
+  /// The color for the title label when selected
+  public var titleSelectedColor: UIColor = .black
+  
+  /// The color for the title label when unselected
+  public var titleUnselectedColor: UIColor = .darkGray
+  
+  /// The font for the title label when selected
+  public var titleSelectedFont: UIFont = .boldSystemFont(ofSize: 14)
+  
+  /// The font for the title label when unselected
+  public var titleUnselectedFont: UIFont = .systemFont(ofSize: 14)
+  
+  /// The multiplier for the size of the bottom selected border compared of the width of the tab title
+  public var borderWidthMultiplier: CGFloat = 0.8
+```
+
+### Others
+
+Some other dataSource callback are available :
+
+```
+  /// Called just before cell will be displayed
+  @objc optional func willDisplay(cell: UICollectionViewCell, forTabIndex index: Int)
+  
+  /// Called just after cell has been displayed
+  @objc optional func didEndDisplaying(cell: UICollectionViewCell, forTabIndex index: Int)
+```
 
 ## Requirements
 
