@@ -340,7 +340,10 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    moved(toIndex: Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollView.frame.width))
+
+    let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
+
+    moved(toIndex: Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth))
   }
 }
 
