@@ -89,23 +89,24 @@ open class MultipleTabsViewController: UIViewController {
     return view
   }()
   
-  private lazy var buttonsView: UIView = {
+  private lazy var buttonsView: UIStackView = {
     
-    let view = UIView()
+    let stackView = UIStackView()
+    stackView.distribution = .fillEqually
     
-    self.titlesView.addSubview(view)
+    self.titlesView.addSubview(stackView)
     
-    view.translatesAutoresizingMaskIntoConstraints = false
-    view.leadingAnchor.constraint(
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.leadingAnchor.constraint(
       equalTo: self.titlesView.leadingAnchor).isActive = true
-    view.trailingAnchor.constraint(
+    stackView.trailingAnchor.constraint(
       equalTo: self.titlesView.trailingAnchor).isActive = true
-    view.topAnchor.constraint(
+    stackView.topAnchor.constraint(
       equalTo: self.titlesView.topAnchor).isActive = true
-    view.bottomAnchor.constraint(
+    stackView.bottomAnchor.constraint(
       equalTo: self.borderView.topAnchor).isActive = true
     
-    return view
+    return stackView
   }()
   
   private lazy var borderView: UIView = {
@@ -201,31 +202,9 @@ open class MultipleTabsViewController: UIViewController {
         button.setTitleColor((index == 0) ? (titleSelectedColor) : (titleUnselectedColor), for: .normal)
         button.titleLabel?.font = (index == 0) ? (titleSelectedFont) : (titleUnselectedFont)
         
-        buttonsView.addSubview(button)
+        buttonsView.addArrangedSubview(button)
         button.tag = index
         button.addTarget(self, action: #selector(self.buttonPressed), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        if index == 0 {
-          button.leadingAnchor.constraint(
-            equalTo: buttonsView.leadingAnchor).isActive = true
-        }
-        else {
-          button.leadingAnchor.constraint(
-            equalTo: buttonsView.subviews[index - 1].trailingAnchor).isActive = true
-          button.widthAnchor.constraint(
-            equalTo: buttonsView.subviews[index - 1].widthAnchor).isActive = true
-        }
-        
-        button.topAnchor.constraint(
-          equalTo: buttonsView.topAnchor).isActive = true
-        button.bottomAnchor.constraint(
-          equalTo: buttonsView.bottomAnchor).isActive = true
-        
-        if index == nbItems - 1 {
-          button.trailingAnchor.constraint(
-            equalTo: buttonsView.trailingAnchor).isActive = true
-        }
       }
     }
   }
