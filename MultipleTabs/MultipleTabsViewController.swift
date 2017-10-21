@@ -80,7 +80,7 @@ open class MultipleTabsViewController: UIViewController {
   
   fileprivate lazy var border: UIView = {
     
-    let view = UIView(frame: .zero)
+    let view = UIView()
     
     view.backgroundColor = self.titleBorderColor
     
@@ -91,7 +91,7 @@ open class MultipleTabsViewController: UIViewController {
   
   fileprivate lazy var buttonsView: UIView = {
     
-    let view = UIView(frame: .zero)
+    let view = UIView()
     
     self.titlesView.addSubview(view)
     
@@ -110,7 +110,7 @@ open class MultipleTabsViewController: UIViewController {
   
   fileprivate lazy var borderView: UIView = {
     
-    let view = UIView(frame: .zero)
+    let view = UIView()
     
     self.titlesView.addSubview(view)
     
@@ -129,7 +129,7 @@ open class MultipleTabsViewController: UIViewController {
   
   fileprivate lazy var titlesView: UIView = {
     
-    let view = UIView(frame: .zero)
+    let view = UIView()
     
     self.view.addSubview(view)
     
