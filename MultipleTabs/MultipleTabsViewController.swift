@@ -253,10 +253,7 @@ open class MultipleTabsViewController: UIViewController {
       
       guard let strongSelf = self else { return }
       
-      if let constraint = self?.borderXConstraint {
-        self?.borderXConstraint?.isActive = false
-        self?.border.removeConstraint(constraint)
-      }
+      self?.borderXConstraint?.isActive = false
       self?.borderXConstraint = self?.border.centerXAnchor.constraint(
         equalTo: strongSelf.buttonsView.subviews[index].centerXAnchor, constant: 0)
       self?.borderXConstraint?.isActive = true
