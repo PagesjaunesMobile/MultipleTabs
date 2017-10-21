@@ -203,7 +203,7 @@ open class MultipleTabsViewController: UIViewController {
         
         buttonsView.addSubview(button)
         button.tag = index
-        button.addTarget(self, action: #selector(self.buttonPressed), for: .touchDown)
+        button.addTarget(self, action: #selector(self.buttonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         if index == 0 {
