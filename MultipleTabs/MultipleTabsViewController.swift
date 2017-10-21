@@ -78,84 +78,75 @@ open class MultipleTabsViewController: UIViewController {
     collectionView.reloadData()
   }
   
-  fileprivate lazy var border: UIView = { [weak self] in
+  fileprivate lazy var border: UIView = {
     
     let view = UIView(frame: .zero)
     
-    view.backgroundColor = self?.titleBorderColor
+    view.backgroundColor = self.titleBorderColor
     
-    self?.borderView.addSubview(view)
+    self.borderView.addSubview(view)
     
     return view
-    }()
+  }()
   
-  fileprivate lazy var buttonsView: UIView = { [weak self] in
+  fileprivate lazy var buttonsView: UIView = {
     
     let view = UIView(frame: .zero)
     
-    self?.titlesView.addSubview(view)
+    self.titlesView.addSubview(view)
     
-    if let strongSelf = self,
-      let titlesView = self?.titlesView {
-      view.translatesAutoresizingMaskIntoConstraints = false
-      view.leadingAnchor.constraint(
-        equalTo: titlesView.leadingAnchor).isActive = true
-      view.trailingAnchor.constraint(
-        equalTo: titlesView.trailingAnchor).isActive = true
-      view.topAnchor.constraint(
-        equalTo: titlesView.topAnchor).isActive = true
-      view.bottomAnchor.constraint(
-        equalTo: strongSelf.borderView.topAnchor).isActive = true
-    }
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.leadingAnchor.constraint(
+      equalTo: self.titlesView.leadingAnchor).isActive = true
+    view.trailingAnchor.constraint(
+      equalTo: self.titlesView.trailingAnchor).isActive = true
+    view.topAnchor.constraint(
+      equalTo: self.titlesView.topAnchor).isActive = true
+    view.bottomAnchor.constraint(
+      equalTo: self.borderView.topAnchor).isActive = true
     
     return view
-    }()
+  }()
   
-  fileprivate lazy var borderView: UIView = { [weak self] in
+  fileprivate lazy var borderView: UIView = {
     
     let view = UIView(frame: .zero)
     
-    self?.titlesView.addSubview(view)
+    self.titlesView.addSubview(view)
     
-    if let strongSelf = self,
-      let titlesView = self?.titlesView {
-      view.translatesAutoresizingMaskIntoConstraints = false
-      view.leadingAnchor.constraint(
-        equalTo: titlesView.leadingAnchor).isActive = true
-      view.trailingAnchor.constraint(
-        equalTo: titlesView.trailingAnchor).isActive = true
-      view.bottomAnchor.constraint(
-        equalTo: titlesView.bottomAnchor).isActive = true
-      view.heightAnchor.constraint(
-        equalToConstant: strongSelf.titleBorderHeight).isActive = true
-    }
-    
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.leadingAnchor.constraint(
+      equalTo: self.titlesView.leadingAnchor).isActive = true
+    view.trailingAnchor.constraint(
+      equalTo: self.titlesView.trailingAnchor).isActive = true
+    view.bottomAnchor.constraint(
+      equalTo: self.titlesView.bottomAnchor).isActive = true
+    view.heightAnchor.constraint(
+      equalToConstant: self.titleBorderHeight).isActive = true
+
     return view
-    }()
+  }()
   
-  fileprivate lazy var titlesView: UIView = { [weak self] in
+  fileprivate lazy var titlesView: UIView = {
     
     let view = UIView(frame: .zero)
     
-    self?.view.addSubview(view)
+    self.view.addSubview(view)
     
-    if let strongSelf = self {
-      view.translatesAutoresizingMaskIntoConstraints = false
-      view.leadingAnchor.constraint(
-        equalTo: strongSelf.view.leadingAnchor).isActive = true
-      view.trailingAnchor.constraint(
-        equalTo: strongSelf.view.trailingAnchor).isActive = true
-      view.topAnchor.constraint(
-        equalTo: strongSelf.view.topAnchor).isActive = true
-      view.heightAnchor.constraint(
-        equalToConstant: strongSelf.titlesHeight).isActive = true
-    }
-    
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.leadingAnchor.constraint(
+      equalTo: self.view.leadingAnchor).isActive = true
+    view.trailingAnchor.constraint(
+      equalTo: self.view.trailingAnchor).isActive = true
+    view.topAnchor.constraint(
+      equalTo: self.view.topAnchor).isActive = true
+    view.heightAnchor.constraint(
+      equalToConstant: self.titlesHeight).isActive = true
+
     return view
-    }()
-  
-  
-  fileprivate lazy var collectionView: UICollectionView = { [weak self] in
+  }()
+
+  fileprivate lazy var collectionView: UICollectionView = {
     
     let layout = UICollectionViewFlowLayout()
     layout.minimumLineSpacing = 0
@@ -173,22 +164,20 @@ open class MultipleTabsViewController: UIViewController {
     cv.bounces = false
     cv.showsHorizontalScrollIndicator = false
     
-    self?.view.addSubview(cv)
+    self.view.addSubview(cv)
     
-    if let strongSelf = self {
-      cv.translatesAutoresizingMaskIntoConstraints = false
-      cv.leadingAnchor.constraint(
-        equalTo: strongSelf.view.leadingAnchor).isActive = true
-      cv.trailingAnchor.constraint(
-        equalTo: strongSelf.view.trailingAnchor).isActive = true
-      cv.topAnchor.constraint(
-        equalTo: strongSelf.titlesView.bottomAnchor).isActive = true
-      cv.bottomAnchor.constraint(
-        equalTo: strongSelf.view.bottomAnchor).isActive = true
-    }
-    
+    cv.translatesAutoresizingMaskIntoConstraints = false
+    cv.leadingAnchor.constraint(
+      equalTo: self.view.leadingAnchor).isActive = true
+    cv.trailingAnchor.constraint(
+      equalTo: self.view.trailingAnchor).isActive = true
+    cv.topAnchor.constraint(
+      equalTo: self.titlesView.bottomAnchor).isActive = true
+    cv.bottomAnchor.constraint(
+      equalTo: self.view.bottomAnchor).isActive = true
+
     return cv
-    }()
+  }()
   
   private func setup() {
     
