@@ -52,7 +52,7 @@ open class MultipleTabsViewController: UIViewController {
   /// The multiplier for the size of the bottom selected border compared of the width of the tab title
   public var borderWidthMultiplier: CGFloat = 0.8
   
-  fileprivate var borderXConstraint: NSLayoutConstraint?
+  private var borderXConstraint: NSLayoutConstraint?
   
   public var dataSource: MultipleTabsViewControllerDataSource? {
     didSet {
@@ -78,7 +78,7 @@ open class MultipleTabsViewController: UIViewController {
     collectionView.reloadData()
   }
   
-  fileprivate lazy var border: UIView = {
+  private lazy var border: UIView = {
     
     let view = UIView()
     
@@ -89,7 +89,7 @@ open class MultipleTabsViewController: UIViewController {
     return view
   }()
   
-  fileprivate lazy var buttonsView: UIView = {
+  private lazy var buttonsView: UIView = {
     
     let view = UIView()
     
@@ -108,7 +108,7 @@ open class MultipleTabsViewController: UIViewController {
     return view
   }()
   
-  fileprivate lazy var borderView: UIView = {
+  private lazy var borderView: UIView = {
     
     let view = UIView()
     
@@ -127,7 +127,7 @@ open class MultipleTabsViewController: UIViewController {
     return view
   }()
   
-  fileprivate lazy var titlesView: UIView = {
+  private lazy var titlesView: UIView = {
     
     let view = UIView()
     
@@ -146,7 +146,7 @@ open class MultipleTabsViewController: UIViewController {
     return view
   }()
 
-  fileprivate lazy var collectionView: UICollectionView = {
+  private lazy var collectionView: UICollectionView = {
     
     let layout = UICollectionViewFlowLayout()
     layout.minimumLineSpacing = 0
