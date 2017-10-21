@@ -70,7 +70,7 @@ open class MultipleTabsViewController: UIViewController {
   
   public func dequeue(identifier: String, index: Int) -> UICollectionViewCell {
     
-    let ip = IndexPath(row: index, section: 0)
+    let ip = IndexPath(item: index, section: 0)
     return collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: ip)
   }
   
@@ -186,7 +186,7 @@ open class MultipleTabsViewController: UIViewController {
     setupButtons()
     setupBorder()
     
-    collectionView.cellForItem(at: IndexPath(row: 1, section: 0))
+    collectionView.cellForItem(at: IndexPath(item: 1, section: 0))
   }
   
   private func setupButtons() {
@@ -257,7 +257,7 @@ open class MultipleTabsViewController: UIViewController {
   
   @objc private func buttonPressed(_ button: UIButton) {
     
-    let indexPath = IndexPath(row: button.tag, section: 0)
+    let indexPath = IndexPath(item: button.tag, section: 0)
     collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
   }
   
@@ -299,7 +299,7 @@ open class MultipleTabsViewController: UIViewController {
       self?.collectionView.collectionViewLayout.invalidateLayout()
       
       if self?.dataSource?.numberOfTabs() ?? 0 > 0 {
-        let indexPath = IndexPath(row: 0, section: 0)
+        let indexPath = IndexPath(item: 0, section: 0)
         self?.collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
       }
     })
@@ -313,7 +313,7 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   }
   
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    return dataSource?.cell(forTabIndex: indexPath.row) ?? UICollectionViewCell()
+    return dataSource?.cell(forTabIndex: indexPath.item) ?? UICollectionViewCell()
   }
   
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -321,11 +321,11 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   }
   
   public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    dataSource?.willDisplay?(cell: cell, forTabIndex: indexPath.row)
+    dataSource?.willDisplay?(cell: cell, forTabIndex: indexPath.item)
   }
   
   public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    dataSource?.didEndDisplaying?(cell: cell, forTabIndex: indexPath.row)
+    dataSource?.didEndDisplaying?(cell: cell, forTabIndex: indexPath.item)
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
