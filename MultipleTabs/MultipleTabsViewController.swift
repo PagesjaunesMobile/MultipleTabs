@@ -319,11 +319,12 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
     guard !isTransitionning else { return }
     
     let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
+    let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
     
-    if currentIndex != Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth) {
-      currentIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
-      moved(toIndex: currentIndex)
-      delegate?.moved?(forMultipleTabs: self, atTabIndex: currentIndex)
+    if currentIndex != newIndex {
+      moved(toIndex: newIndex)
+      delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
+      currentIndex = newIndex
     }
   }
 }
