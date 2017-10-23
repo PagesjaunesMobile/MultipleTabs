@@ -36,6 +36,9 @@ class ViewController: MultipleTabsViewController {
     register(type: Cell2.self, identifier: "Cell2")
     delegate = self
     dataSource = self
+    
+    // The line can change the current tab index to 1
+    // change(toIndex: 1)
   }
 }
 
