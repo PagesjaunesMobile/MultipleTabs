@@ -34,6 +34,7 @@ class ViewController: MultipleTabsViewController {
     
     register(type: Cell1.self, identifier: "Cell1")
     register(type: Cell2.self, identifier: "Cell2")
+    delegate = self
     dataSource = self
   }
 }
@@ -41,17 +42,17 @@ class ViewController: MultipleTabsViewController {
 extension ViewController: MultipleTabsViewControllerDataSource {
   
   /// The number of tabs you want
-  func numberOfTabs() -> Int {
+  func numberOfTabs(forMultipleTabs multipleTabs: MultipleTabsViewController) -> Int {
     return 2
   }
   
   /// The title for each tab
-  func title(forTabIndex index: Int) -> String {
+  func title(forMultipleTabs multipleTabs: MultipleTabsViewController, atTabIndex index: Int) -> String {
     return "Title"
   }
   
   /// Return the container cell you want for the tabIndex
-  func cell(forTabIndex index: Int) -> UICollectionViewCell {
+  func cell(forMultipleTabs multipleTabs: MultipleTabsViewController, atTabIndex index: Int) -> UICollectionViewCell {
     
     let cell: UICollectionViewCell
     
@@ -63,6 +64,13 @@ extension ViewController: MultipleTabsViewControllerDataSource {
     }
     
     return cell
+  }
+}
+
+extension ViewController: MultipleTabsViewControllerDelegate {
+  
+  func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int) {
+    print("New tab index is \(index)")
   }
 }
 

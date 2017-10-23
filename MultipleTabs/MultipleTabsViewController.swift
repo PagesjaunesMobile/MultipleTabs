@@ -54,11 +54,19 @@ open class MultipleTabsViewController: UIViewController {
   
   private var borderXConstraint: NSLayoutConstraint?
   
+  /// The current tab index
+  fileprivate(set) var currentIndex: Int = 0
+  
+  fileprivate var isTransitionning: Bool = false
+  
   public var dataSource: MultipleTabsViewControllerDataSource? {
     didSet {
       setup()
+      delegate?.moved?(forMultipleTabs: self, atTabIndex: currentIndex)
     }
   }
+  
+  public var delegate: MultipleTabsViewControllerDelegate?
   
   public func register<T>(type: T.Type, identifier: String) where T: UICollectionViewCell {
     collectionView.register(type, forCellWithReuseIdentifier: identifier)
@@ -124,7 +132,7 @@ open class MultipleTabsViewController: UIViewController {
       equalTo: self.titlesView.bottomAnchor).isActive = true
     view.heightAnchor.constraint(
       equalToConstant: self.titleBorderHeight).isActive = true
-
+    
     return view
   }()
   
@@ -143,10 +151,10 @@ open class MultipleTabsViewController: UIViewController {
       equalTo: self.view.topAnchor).isActive = true
     view.heightAnchor.constraint(
       equalToConstant: self.titlesHeight).isActive = true
-
+    
     return view
   }()
-
+  
   private lazy var collectionView: UICollectionView = {
     
     let layout = UICollectionViewFlowLayout()
@@ -176,7 +184,7 @@ open class MultipleTabsViewController: UIViewController {
       equalTo: self.titlesView.bottomAnchor).isActive = true
     cv.bottomAnchor.constraint(
       equalTo: self.view.bottomAnchor).isActive = true
-
+    
     return cv
   }()
   
@@ -186,19 +194,17 @@ open class MultipleTabsViewController: UIViewController {
     
     setupButtons()
     setupBorder()
-    
-    collectionView.cellForItem(at: IndexPath(item: 1, section: 0))
   }
   
   private func setupButtons() {
     
-    if let nbItems = dataSource?.numberOfTabs(),
+    if let nbItems = dataSource?.numberOfTabs(forMultipleTabs: self),
       nbItems > 0 {
       
       for index in 0 ..< nbItems {
         
         let button = UIButton(type: .custom)
-        button.setTitle(dataSource?.title(forTabIndex: index), for: .normal)
+        button.setTitle(dataSource?.title(forMultipleTabs: self, atTabIndex: index), for: .normal)
         button.setTitleColor((index == 0) ? (titleSelectedColor) : (titleUnselectedColor), for: .normal)
         button.titleLabel?.font = (index == 0) ? (titleSelectedFont) : (titleUnselectedFont)
         
@@ -211,7 +217,7 @@ open class MultipleTabsViewController: UIViewController {
   
   private func setupBorder() {
     
-    if let nbItems = dataSource?.numberOfTabs(),
+    if let nbItems = dataSource?.numberOfTabs(forMultipleTabs: self),
       nbItems > 0 {
       
       border.translatesAutoresizingMaskIntoConstraints = false
@@ -270,12 +276,16 @@ open class MultipleTabsViewController: UIViewController {
   
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
+    
+    isTransitionning = true
     coordinator.animate(alongsideTransition: nil, completion: { [weak self] _ in
       
       self?.collectionView.collectionViewLayout.invalidateLayout()
+      self?.isTransitionning = false
       
-      if self?.dataSource?.numberOfTabs() ?? 0 > 0 {
-        let indexPath = IndexPath(item: 0, section: 0)
+      if let _self = self,
+        _self.dataSource?.numberOfTabs(forMultipleTabs: _self) ?? 0 > 0 {
+        let indexPath = IndexPath(item: _self.currentIndex, section: 0)
         self?.collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
       }
     })
@@ -285,11 +295,11 @@ open class MultipleTabsViewController: UIViewController {
 extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
   
   public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return dataSource?.numberOfTabs() ?? 0
+    return dataSource?.numberOfTabs(forMultipleTabs: self) ?? 0
   }
   
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    return dataSource?.cell(forTabIndex: indexPath.item) ?? UICollectionViewCell()
+    return dataSource?.cell(forMultipleTabs: self, atTabIndex: indexPath.item) ?? UICollectionViewCell()
   }
   
   public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -297,35 +307,48 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   }
   
   public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    dataSource?.willDisplay?(cell: cell, forTabIndex: indexPath.item)
+    delegate?.willDisplay?(forMultipleTabs: self, cell: cell, atTabIndex: indexPath.item)
   }
   
   public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    dataSource?.didEndDisplaying?(cell: cell, forTabIndex: indexPath.item)
+    delegate?.didEndDisplaying?(forMultipleTabs: self, cell: cell, atTabIndex: indexPath.item)
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
+    
+    guard !isTransitionning else { return }
+    
     let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
-
-    moved(toIndex: Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth))
+    let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
+    
+    if currentIndex != newIndex {
+      moved(toIndex: newIndex)
+      delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
+      currentIndex = newIndex
+    }
   }
 }
 
 @objc public protocol MultipleTabsViewControllerDataSource {
   
   // The number of tabs you want
-  @objc func numberOfTabs() -> Int
+  @objc func numberOfTabs(forMultipleTabs: MultipleTabsViewController) -> Int
   
   /// The title for each tab
-  @objc func title(forTabIndex index: Int) -> String
+  @objc func title(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int) -> String
   
   /// Return the container cell you want for the tabIndex
-  @objc func cell(forTabIndex index: Int) -> UICollectionViewCell
+  @objc func cell(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int) -> UICollectionViewCell
+}
+
+@objc public protocol MultipleTabsViewControllerDelegate {
   
   /// Called just before cell will be displayed
-  @objc optional func willDisplay(cell: UICollectionViewCell, forTabIndex index: Int)
+  @objc optional func willDisplay(forMultipleTabs: MultipleTabsViewController, cell: UICollectionViewCell, atTabIndex index: Int)
   
   /// Called just after cell has been displayed
-  @objc optional func didEndDisplaying(cell: UICollectionViewCell, forTabIndex index: Int)
+  @objc optional func didEndDisplaying(forMultipleTabs: MultipleTabsViewController, cell: UICollectionViewCell, atTabIndex index: Int)
+  
+  /// Called just a tab changed with the new index
+  @objc optional func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
 }
