@@ -58,6 +58,7 @@ open class MultipleTabsViewController: UIViewController {
   fileprivate(set) var currentIndex: Int = 0
   
   fileprivate var isTransitionning: Bool = false
+  fileprivate var isManualIndexChanging: Bool = false
   
   public var dataSource: MultipleTabsViewControllerDataSource? {
     didSet {
@@ -240,6 +241,16 @@ open class MultipleTabsViewController: UIViewController {
     }
   }
   
+  //
+  // Method to change the current tab index
+  //
+  public func change(toIndex index: Int, animated: Bool = false) {
+    
+    isManualIndexChanging = true
+    view.layoutIfNeeded()
+    collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .left, animated: animated)
+  }
+  
   @objc private func buttonPressed(_ button: UIButton) {
     
     let indexPath = IndexPath(item: button.tag, section: 0)
@@ -255,7 +266,7 @@ open class MultipleTabsViewController: UIViewController {
       }
     })
     
-    UIView.animate(withDuration: 0.3) { [weak self] in
+    let titleMovingBlock = { [weak self] in
       
       guard let strongSelf = self else { return }
       
@@ -265,6 +276,15 @@ open class MultipleTabsViewController: UIViewController {
       self?.borderXConstraint?.isActive = true
       self?.view.layoutIfNeeded()
     }
+    
+    if !isManualIndexChanging {
+      UIView.animate(withDuration: 0.3, animations: titleMovingBlock)
+    }
+    else {
+      titleMovingBlock()
+    }
+    
+    isManualIndexChanging = false
   }
   
   private func reset() {
