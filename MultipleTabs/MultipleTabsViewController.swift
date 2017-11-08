@@ -69,6 +69,18 @@ open class MultipleTabsViewController: UIViewController {
   
   public var delegate: MultipleTabsViewControllerDelegate?
   
+  /// A boolean for enabling spring loaded interactions on the buttons. If set
+  /// to `true`, then the user can change the current tab during a drag
+  /// interaction by hovering over a button. Defaults to `false`.
+  public var isSpringLoadedInteractionEnabled = false {
+    didSet {
+      for button in buttonsView.arrangedSubviews {
+        guard let button = button as? UIButton else { continue }
+        setupSpringLoadedInteraction(for: button)
+      }
+    }
+  }
+  
   public func register<T>(type: T.Type, identifier: String) where T: UICollectionViewCell {
     collectionView.register(type, forCellWithReuseIdentifier: identifier)
   }
@@ -212,6 +224,7 @@ open class MultipleTabsViewController: UIViewController {
         buttonsView.addArrangedSubview(button)
         button.tag = index
         button.addTarget(self, action: #selector(self.buttonPressed), for: .touchUpInside)
+        setupSpringLoadedInteraction(for: button)
       }
     }
   }
@@ -238,6 +251,20 @@ open class MultipleTabsViewController: UIViewController {
         border.widthAnchor.constraint(
           equalTo: buttonView.widthAnchor, multiplier: borderWidthMultiplier).isActive = true
       }
+    }
+  }
+  
+  private func setupSpringLoadedInteraction(for button: UIButton) {
+    guard #available(iOS 11, *) else { return }
+    
+    if isSpringLoadedInteractionEnabled {
+      let index = button.tag
+      let interaction = UISpringLoadedInteraction() { [weak self] interaction, context in
+        self?.change(toIndex: index, animated: true)
+      }
+      button.addInteraction(interaction)
+    } else {
+      button.interactions.forEach { button.removeInteraction($0) }
     }
   }
   
