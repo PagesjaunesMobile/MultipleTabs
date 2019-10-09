@@ -374,6 +374,9 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
       currentIndex = newIndex
     }
   }
+  public func invalidateCollectionLayouts() {
+    collectionView.collectionViewLayout.invalidateLayout()
+  }
 }
 
 @objc public protocol MultipleTabsViewControllerDataSource {
