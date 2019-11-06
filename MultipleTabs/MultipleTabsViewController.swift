@@ -401,4 +401,7 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   /// Called just a tab changed with the new index
   @objc optional func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  
+  /// Called just to notify Opening new screen
+  @objc optional func notifyShowingScreen(atTabIndex index: Int)
 }
