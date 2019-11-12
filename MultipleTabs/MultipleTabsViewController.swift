@@ -57,7 +57,12 @@ open class MultipleTabsViewController: UIViewController {
   /// The current tab index
   fileprivate(set) var currentIndex: Int = 0
   
-  fileprivate var isTransitionning: Bool = false
+  fileprivate enum TabState {
+    case show
+    case transitionning
+    case off
+  }
+  fileprivate var state: TabState = .off
   fileprivate var isManualIndexChanging: Bool = false
   
   public var dataSource: MultipleTabsViewControllerDataSource? {
@@ -66,10 +71,23 @@ open class MultipleTabsViewController: UIViewController {
       delegate?.moved?(forMultipleTabs: self, atTabIndex: currentIndex)
     }
   }
-  
+  open override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.state = .show
+  }
   open override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    delegate?.notifyShowingScreen?(forMultipleTabs: self, atTabIndex: currentIndex)
+    switch state {
+    case .show:
+     delegate?.notifyShowingScreenOnlyOnce?(forMultipleTabs: self, atTabIndex: currentIndex)
+     delegate?.notifyShowingScreenForEachSwipe?(forMultipleTabs: self, atTabIndex: currentIndex)
+    default:
+      return
+    }
+  }
+  open override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    self.state = .off
   }
   
   public var delegate: MultipleTabsViewControllerDelegate?
@@ -328,11 +346,11 @@ open class MultipleTabsViewController: UIViewController {
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
     
-    isTransitionning = true
+    self.state = .transitionning
     coordinator.animate(alongsideTransition: nil, completion: { [weak self] _ in
       
       self?.collectionView.collectionViewLayout.invalidateLayout()
-      self?.isTransitionning = false
+      self?.state = .show
       
       if let _self = self,
         _self.dataSource?.numberOfTabs(forMultipleTabs: _self) ?? 0 > 0 {
@@ -363,20 +381,23 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     delegate?.didEndDisplaying?(forMultipleTabs: self, cell: cell, atTabIndex: indexPath.item)
-    delegate?.notifyShowingScreen?(forMultipleTabs: self, atTabIndex: indexPath.item)
+    delegate?.notifyShowingScreenForEachSwipe?(forMultipleTabs: self, atTabIndex: indexPath.item)
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    
-    guard !isTransitionning else { return }
-    
-    let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
-    let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
-    
-    if currentIndex != newIndex {
-      moved(toIndex: newIndex)
-      delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
-      currentIndex = newIndex
+        
+    switch state {
+    case .transitionning:
+      return
+    default:
+      let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
+      let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
+      
+      if currentIndex != newIndex {
+        moved(toIndex: newIndex)
+        delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
+        currentIndex = newIndex
+      }
     }
   }
   public func invalidateCollectionLayouts() {
@@ -408,5 +429,9 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   @objc optional func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
   
   /// Called just to notify Opening new screen
-  @objc optional func notifyShowingScreen(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  @objc optional func notifyShowingScreenOnlyOnce(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  
+  /// Called just to notify Opening new screen
+  @objc optional func notifyShowingScreenForEachSwipe(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  
 }
