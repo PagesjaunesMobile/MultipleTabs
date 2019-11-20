@@ -57,7 +57,13 @@ open class MultipleTabsViewController: UIViewController {
   /// The current tab index
   fileprivate(set) var currentIndex: Int = 0
   
-  fileprivate var isTransitionning: Bool = false
+  fileprivate enum TabState {
+    case show
+    case transitionning
+    case off
+  }
+  
+  fileprivate var state: TabState = .off
   fileprivate var isManualIndexChanging: Bool = false
   
   public var dataSource: MultipleTabsViewControllerDataSource? {
@@ -65,6 +71,19 @@ open class MultipleTabsViewController: UIViewController {
       setup()
       delegate?.moved?(forMultipleTabs: self, atTabIndex: currentIndex)
     }
+  }
+  open override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.state = .show
+  }
+  open override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    guard state == .show else { return }
+     delegate?.didShow?(forMultipleTabs: self, atTabIndex: currentIndex)
+  }
+  open override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    self.state = .off
   }
   
   public var delegate: MultipleTabsViewControllerDelegate?
@@ -259,7 +278,7 @@ open class MultipleTabsViewController: UIViewController {
     
     if isSpringLoadedInteractionEnabled {
       let index = button.tag
-      let interaction = UISpringLoadedInteraction() { [weak self] interaction, context in
+      let interaction = UISpringLoadedInteraction { [weak self] _, _ in
         self?.change(toIndex: index, animated: true)
       }
       button.addInteraction(interaction)
@@ -306,8 +325,7 @@ open class MultipleTabsViewController: UIViewController {
     
     if !isManualIndexChanging {
       UIView.animate(withDuration: 0.3, animations: titleMovingBlock)
-    }
-    else {
+    } else {
       titleMovingBlock()
     }
     
@@ -324,11 +342,11 @@ open class MultipleTabsViewController: UIViewController {
   override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
     
-    isTransitionning = true
+    self.state = .transitionning
     coordinator.animate(alongsideTransition: nil, completion: { [weak self] _ in
       
       self?.collectionView.collectionViewLayout.invalidateLayout()
-      self?.isTransitionning = false
+      self?.state = .show
       
       if let _self = self,
         _self.dataSource?.numberOfTabs(forMultipleTabs: _self) ?? 0 > 0 {
@@ -359,12 +377,13 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     delegate?.didEndDisplaying?(forMultipleTabs: self, cell: cell, atTabIndex: indexPath.item)
+    guard let value = delegate?.isAlwaysNotifyShowing, value else { return }
+    delegate?.didShow?(forMultipleTabs: self, atTabIndex: indexPath.item)
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    
-    guard !isTransitionning else { return }
-    
+
+    guard state != .transitionning else { return }
     let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
     let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
     
@@ -393,6 +412,8 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
 
 @objc public protocol MultipleTabsViewControllerDelegate {
   
+  @objc var isAlwaysNotifyShowing: Bool { get set }
+  
   /// Called just before cell will be displayed
   @objc optional func willDisplay(forMultipleTabs: MultipleTabsViewController, cell: UICollectionViewCell, atTabIndex index: Int)
   
@@ -401,4 +422,8 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   /// Called just a tab changed with the new index
   @objc optional func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+
+  /// Called just to notify Opening new screen
+  @objc optional func didShow(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  
 }
