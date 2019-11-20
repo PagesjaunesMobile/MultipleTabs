@@ -62,6 +62,7 @@ open class MultipleTabsViewController: UIViewController {
     case transitionning
     case off
   }
+  
   fileprivate var state: TabState = .off
   fileprivate var isManualIndexChanging: Bool = false
   
@@ -77,13 +78,8 @@ open class MultipleTabsViewController: UIViewController {
   }
   open override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    switch state {
-    case .show:
-     delegate?.notifyShowingScreenOnlyOnce?(forMultipleTabs: self, atTabIndex: currentIndex)
-     delegate?.notifyShowingScreenForEachSwipe?(forMultipleTabs: self, atTabIndex: currentIndex)
-    default:
-      return
-    }
+    guard state == .show else { return }
+     delegate?.didShow?(forMultipleTabs: self, atTabIndex: currentIndex)
   }
   open override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
@@ -381,23 +377,20 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     delegate?.didEndDisplaying?(forMultipleTabs: self, cell: cell, atTabIndex: indexPath.item)
-    delegate?.notifyShowingScreenForEachSwipe?(forMultipleTabs: self, atTabIndex: indexPath.item)
+    guard let value = delegate?.isAlwaysNotifyShowing, value else { return }
+    delegate?.didShow?(forMultipleTabs: self, atTabIndex: indexPath.item)
   }
   
   public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-    switch state {
-    case .transitionning:
-      return
-    default:
-      let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
-      let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
-      
-      if currentIndex != newIndex {
-        moved(toIndex: newIndex)
-        delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
-        currentIndex = newIndex
-      }
+
+    guard state != .transitionning else { return }
+    let scrollViewFrameWidth = scrollView.frame.width > 0 ? scrollView.frame.width : 1
+    let newIndex = Int((scrollView.contentOffset.x + scrollView.frame.width / 2) / scrollViewFrameWidth)
+    
+    if currentIndex != newIndex {
+      moved(toIndex: newIndex)
+      delegate?.moved?(forMultipleTabs: self, atTabIndex: newIndex)
+      currentIndex = newIndex
     }
   }
   public func invalidateCollectionLayouts() {
@@ -419,6 +412,8 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
 
 @objc public protocol MultipleTabsViewControllerDelegate {
   
+  @objc var isAlwaysNotifyShowing: Bool { get set }
+  
   /// Called just before cell will be displayed
   @objc optional func willDisplay(forMultipleTabs: MultipleTabsViewController, cell: UICollectionViewCell, atTabIndex index: Int)
   
@@ -427,11 +422,8 @@ extension MultipleTabsViewController: UICollectionViewDataSource, UICollectionVi
   
   /// Called just a tab changed with the new index
   @objc optional func moved(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
-  
+
   /// Called just to notify Opening new screen
-  @objc optional func notifyShowingScreenOnlyOnce(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
-  
-  /// Called just to notify Opening new screen
-  @objc optional func notifyShowingScreenForEachSwipe(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
+  @objc optional func didShow(forMultipleTabs: MultipleTabsViewController, atTabIndex index: Int)
   
 }
